@@ -63,7 +63,7 @@ The `welcome.hbs` file is the view that will be rendered as the body of the emai
 To use HandlebarsEmailRenderer in your project, you'll need to create an instance of the `HandlebarsEmailRenderer` class with the desired options:
 
 ```javascript
-const HandlebarsEmailRenderer = require("handlebars-email-renderer");
+const { HandlebarsEmailRenderer } = require("handlebars-email-renderer");
 
 const renderer = new HandlebarsEmailRenderer();
 

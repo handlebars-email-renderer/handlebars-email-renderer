@@ -1,6 +1,6 @@
 // Import Modules
 const { createTransport } = require("nodemailer");
-const HandlebarsEmailRenderer = require("handlebars-email-renderer");
+const { HandlebarsEmailRenderer } = require("handlebars-email-renderer");
 const dotenv = require("dotenv");
 
 // Load environment variables

@@ -3,7 +3,7 @@
 // Import the necessary packages
 import "mocha";
 import assert from "assert";
-import HandlebarsEmailRenderer from "../lib/esm/index.mjs";
+import { HandlebarsEmailRenderer } from "../lib/esm/index.mjs";
 import fs, { readFileSync } from "fs";
 import util from "util";
 import path from "path";

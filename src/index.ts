@@ -23,7 +23,7 @@ interface HandlebarsEmailRendererOptions {
  *
  * @class
  */
-export default class HandlebarsEmailRenderer {
+export class HandlebarsEmailRenderer {
   private isBuilt: boolean = false;
   private buildPromiseResolve!: () => void;
   private buildPromise: Promise<void>;
