@@ -1,6 +1,6 @@
 {
   "name": "handlebars-email-renderer",
-  "version": "2.0.4",
+  "version": "0.0.0-development",
   "description": "Allows you to create components that render to email HTML using Handlebars.js.",
   "private": false,
   "exports": {
