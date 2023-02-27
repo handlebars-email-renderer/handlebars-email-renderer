@@ -4,7 +4,12 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![GitHub repo size](https://img.shields.io/github/repo-size/handlebars-email-renderer/handlebars-email-renderer)](https://github.com/handlebars-email-renderer/handlebars-email-renderer)
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+[![Code format: Prettier](https://img.shields.io/badge/code_format-prettier-blue.svg?style=flat-square)](https://github.com/prettier/prettier)
+
+[![Build states](https://github.com/handlebars-email-renderer/handlebars-email-renderer/workflows/Tests/badge.svg)](https://github.com/handlebars-email-renderer/handlebars-email-renderer/actions?query=workflow%3ATests+branch%3Amain)
+[![Known Vulnerabilities](https://snyk.io/test/github/handlebars-email-renderer/handlebars-email-renderer/badge.svg)](https://snyk.io/test/github/handlebars-email-renderer/handlebars-email-renderer)
+
+<!-- [![build status](https://travis-ci.com/npm/handlebars-email-renderer/handlebars-email-renderer.svg)](https://travis-ci.com/npm/handlebars-email-renderer/handlebars-email-renderer) -->
 
 [![GitHub issues](https://img.shields.io/github/issues/handlebars-email-renderer/handlebars-email-renderer)](https://github.com/handlebars-email-renderer/handlebars-email-renderer/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/handlebars-email-renderer/handlebars-email-renderer)](https://github.com/handlebars-email-renderer/handlebars-email-renderer/pulls)
