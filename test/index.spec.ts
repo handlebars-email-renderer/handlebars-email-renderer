@@ -483,7 +483,7 @@ describe("HandlebarsEmailRenderer", () => {
     it("should register a new helper", async () => {
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
       const helperName = "greet";
-      const helperFn = function (name: any) {
+      const helperFn = function (name: string) {
         return `Hello, ${name}!`;
       };
 
@@ -503,7 +503,7 @@ describe("HandlebarsEmailRenderer", () => {
     // Test that an error is thrown if the helper name argument is not a string
     it("should throw an error if the helper name argument is not a string", async () => {
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
-      const helperFn = function (name: any) {
+      const helperFn = function (name: string) {
         return `Hello, ${name}!`;
       };
 
