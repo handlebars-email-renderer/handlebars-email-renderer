@@ -2,11 +2,13 @@
 
 // Import the necessary packages
 import "mocha";
-import assert from "assert";
-import { HandlebarsEmailRenderer } from "../lib/esm/index.mjs";
-import fs, { readFileSync } from "fs";
-import util from "util";
-import path from "path";
+import { HandlebarsEmailRenderer } from "../src/index";
+import * as fs from "fs";
+import * as util from "util";
+import * as path from "path";
+import chai, { assert, expect } from "chai";
+import chaiAsPromised from "chai-as-promised";
+chai.use(chaiAsPromised);
 
 // Define the views path
 const viewsPath = {
@@ -28,44 +30,37 @@ describe("HandlebarsEmailRenderer", () => {
 
     // Test that an error is thrown if the viewsPath argument is not a string
     it("should throw an error if the viewsPath argument is not a string", async () => {
-      await assert.rejects(
-        async () => new HandlebarsEmailRenderer({ viewsPath: 123 }),
-        {
-          name: "Error",
-          message:
-            'The "viewsPath" argument must be a string. Received an argument of type "number".',
-        }
+      expect(() => {
+        // @ts-ignore
+        new HandlebarsEmailRenderer({ viewsPath: 123 });
+      }).to.throw(
+        'The "viewsPath" argument must be a string. Received an argument of type "number".'
       );
     });
 
     // Test that an error is thrown if the helpers argument is not an object or undefined
     it("should throw an error if the helpers argument is not an object or undefined", async () => {
-      await assert.rejects(
-        async () =>
-          new HandlebarsEmailRenderer({ ...viewsPath, helpers: "is string" }),
-        {
-          name: "Error",
-          message:
-            'The "helpers" argument must be an object. Received an argument of type "string".',
-        }
+      expect(() => {
+        // @ts-ignore
+        new HandlebarsEmailRenderer({ ...viewsPath, helpers: "is string" });
+      }).to.throw(
+        'The "helpers" argument must be an object. Received an argument of type "string".'
       );
     });
 
     // Test that an error is thrown if the helpers argument is not an object with function
     it("should throw an error if the helpers argument is not an object with a function", async () => {
-      await assert.rejects(
-        async () =>
-          new HandlebarsEmailRenderer({
-            ...viewsPath,
-            helpers: {
-              noFunctionHelper: "is string",
-            },
-          }),
-        {
-          name: "Error",
-          message:
-            'The "helpers.noFunctionHelper" argument must be a function. Received an argument of type "string".',
-        }
+      expect(() => {
+        // @ts-ignore
+        new HandlebarsEmailRenderer({
+          ...viewsPath,
+          helpers: {
+            // @ts-ignore
+            noFunctionHelper: "is string",
+          },
+        });
+      }).to.throw(
+        'The "helpers.noFunctionHelper" argument must be a function. Received an argument of type "string".'
       );
     });
   });
@@ -88,12 +83,8 @@ describe("HandlebarsEmailRenderer", () => {
           "no_existant_view_path"
         ),
       });
-      await assert.rejects(
-        async () => await mailRenderer.render(view, options),
-        {
-          name: "Error",
-          message: `ENOENT: no such file or directory, stat '${mailRenderer.viewsPath}'`,
-        }
+      await expect(mailRenderer.render(view, options)).to.be.rejectedWith(
+        `ENOENT: no such file or directory, stat '${mailRenderer.viewsPath}'`
       );
     });
 
@@ -113,16 +104,12 @@ describe("HandlebarsEmailRenderer", () => {
         ),
       });
 
-      await assert.rejects(
-        async () => await mailRenderer.render(view, options),
-        {
-          name: "Error",
-          message: `ENOENT: no such file or directory, open '${path.join(
-            mailRenderer.viewsPath,
-            "layouts",
-            "main.hbs"
-          )}'`,
-        }
+      await expect(mailRenderer.render(view, options)).to.be.rejectedWith(
+        `ENOENT: no such file or directory, open '${path.join(
+          mailRenderer.viewsPath,
+          "layouts",
+          "main.hbs"
+        )}'`
       );
     });
 
@@ -174,12 +161,8 @@ describe("HandlebarsEmailRenderer", () => {
         ),
       });
 
-      await assert.rejects(
-        async () => await mailRenderer.render(view, options),
-        {
-          name: "Error",
-          message: `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/main.hbs'`,
-        }
+      await expect(mailRenderer.render(view, options)).to.be.rejectedWith(
+        `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/main.hbs'`
       );
     });
 
@@ -192,12 +175,8 @@ describe("HandlebarsEmailRenderer", () => {
       };
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(
-        async () => await mailRenderer.render(view, options),
-        {
-          name: "Error",
-          message: `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/123.hbs'`,
-        }
+      await expect(mailRenderer.render(view, options)).to.be.rejectedWith(
+        `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/123.hbs'`
       );
     });
 
@@ -210,12 +189,8 @@ describe("HandlebarsEmailRenderer", () => {
       };
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(
-        async () => await mailRenderer.render(view, options),
-        {
-          name: "Error",
-          message: `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/non_existent_layout.hbs'`,
-        }
+      await expect(mailRenderer.render(view, options)).to.be.rejectedWith(
+        `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/non_existent_layout.hbs'`
       );
     });
 
@@ -227,13 +202,9 @@ describe("HandlebarsEmailRenderer", () => {
       };
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(
-        async () => await mailRenderer.render(view, options),
-        {
-          name: "Error",
-          message:
-            'The "view" argument must be a string. Received an argument of type "number".',
-        }
+      // @ts-ignore
+      await expect(mailRenderer.render(view, options)).to.be.rejectedWith(
+        'The "view" argument must be a string. Received an argument of type "number".'
       );
     });
 
@@ -243,14 +214,11 @@ describe("HandlebarsEmailRenderer", () => {
       const options = {
         username: "John",
       };
+
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(
-        async () => await mailRenderer.render(view, options),
-        {
-          name: "Error",
-          message: `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/non_existent_template.hbs'`,
-        }
+      await expect(mailRenderer.render(view, options)).to.be.rejectedWith(
+        `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/non_existent_template.hbs'`
       );
     });
 
@@ -290,12 +258,8 @@ describe("HandlebarsEmailRenderer", () => {
 
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(
-        async () => await mailRenderer.render(view, options),
-        {
-          name: "Error",
-          message: `Missing helper: "unknowHelper"`,
-        }
+      await expect(mailRenderer.render(view, options)).to.be.rejectedWith(
+        `Missing helper: "unknowHelper"`
       );
     });
   });
@@ -318,10 +282,9 @@ describe("HandlebarsEmailRenderer", () => {
           "no_existant_view_path"
         ),
       });
-      await assert.rejects(async () => mailRenderer.renderSync(view, options), {
-        name: "Error",
-        message: `The viewsPath "${mailRenderer.viewsPath}" does not exist.`,
-      });
+      expect(() => {
+        mailRenderer.renderSync(view, options);
+      }).to.throw(`The viewsPath "${mailRenderer.viewsPath}" does not exist.`);
     });
 
     // Test to check if an error is thrown when the layout path doesn't exist.
@@ -340,14 +303,15 @@ describe("HandlebarsEmailRenderer", () => {
         ),
       });
 
-      await assert.rejects(async () => mailRenderer.renderSync(view, options), {
-        name: "Error",
-        message: `ENOENT: no such file or directory, open '${path.join(
+      expect(() => {
+        mailRenderer.renderSync(view, options);
+      }).to.throw(
+        `ENOENT: no such file or directory, open '${path.join(
           mailRenderer.viewsPath,
           "layouts",
           "main.hbs"
-        )}'`,
-      });
+        )}'`
+      );
     });
 
     // Test to check if an email template is rendered with the default layout.
@@ -356,7 +320,7 @@ describe("HandlebarsEmailRenderer", () => {
       const options = {
         username: "John",
       };
-      const expectedRenderedEmail = readFileSync(
+      const expectedRenderedEmail = fs.readFileSync(
         "./test/fixtures/expected_welcome_email_with_layout.html",
         "utf-8"
       );
@@ -374,7 +338,7 @@ describe("HandlebarsEmailRenderer", () => {
         layout: "admin",
         username: "John",
       };
-      const expectedRenderedEmail = readFileSync(
+      const expectedRenderedEmail = fs.readFileSync(
         "./test/fixtures/expected_welcome_email_with_admin_layout.html",
         "utf-8"
       );
@@ -399,10 +363,11 @@ describe("HandlebarsEmailRenderer", () => {
         ),
       });
 
-      await assert.rejects(async () => mailRenderer.renderSync(view, options), {
-        name: "Error",
-        message: `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/main.hbs'`,
-      });
+      expect(() => {
+        mailRenderer.renderSync(view, options);
+      }).to.throw(
+        `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/main.hbs'`
+      );
     });
 
     // Test to check if an error is thrown when the layout argument is not a string.
@@ -414,10 +379,11 @@ describe("HandlebarsEmailRenderer", () => {
       };
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(async () => mailRenderer.renderSync(view, options), {
-        name: "Error",
-        message: `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/123.hbs'`,
-      });
+      expect(() => {
+        mailRenderer.renderSync(view, options);
+      }).to.throw(
+        `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/123.hbs'`
+      );
     });
 
     // Test to check if an error is thrown when the default custom layout file doesn't exist.
@@ -429,10 +395,11 @@ describe("HandlebarsEmailRenderer", () => {
       };
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(async () => mailRenderer.renderSync(view, options), {
-        name: "Error",
-        message: `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/non_existent_layout.hbs'`,
-      });
+      expect(() => {
+        mailRenderer.renderSync(view, options);
+      }).to.throw(
+        `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/layouts/non_existent_layout.hbs'`
+      );
     });
 
     // Test to check if an error is thrown when the view argument is not a string.
@@ -443,11 +410,12 @@ describe("HandlebarsEmailRenderer", () => {
       };
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(async () => mailRenderer.renderSync(view, options), {
-        name: "Error",
-        message:
-          'The "view" argument must be a string. Received an argument of type "number".',
-      });
+      expect(() => {
+        // @ts-ignore
+        mailRenderer.renderSync(view, options);
+      }).to.throw(
+        'The "view" argument must be a string. Received an argument of type "number".'
+      );
     });
 
     // Test to check if an error is thrown when the email template file doesn't exist.
@@ -458,10 +426,12 @@ describe("HandlebarsEmailRenderer", () => {
       };
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(async () => mailRenderer.renderSync(view, options), {
-        name: "Error",
-        message: `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/non_existent_template.hbs'`,
-      });
+      expect(() => {
+        // @ts-ignore
+        mailRenderer.renderSync(view, options);
+      }).to.throw(
+        `ENOENT: no such file or directory, open '${mailRenderer.viewsPath}/non_existent_template.hbs'`
+      );
     });
 
     // Test to check if an email template is rendered with helper.
@@ -470,7 +440,7 @@ describe("HandlebarsEmailRenderer", () => {
       const options = {
         username: "John",
       };
-      const expectedRenderedEmail = readFileSync(
+      const expectedRenderedEmail = fs.readFileSync(
         "./test/fixtures/expected_existent_helper.html",
         "utf-8"
       );
@@ -500,10 +470,10 @@ describe("HandlebarsEmailRenderer", () => {
 
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(async () => mailRenderer.renderSync(view, options), {
-        name: "Error",
-        message: `Missing helper: "unknowHelper"`,
-      });
+      expect(() => {
+        // @ts-ignore
+        mailRenderer.renderSync(view, options);
+      }).to.throw(`Missing helper: "unknowHelper"`);
     });
   });
 
@@ -513,7 +483,7 @@ describe("HandlebarsEmailRenderer", () => {
     it("should register a new helper", async () => {
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
       const helperName = "greet";
-      const helperFn = function (name) {
+      const helperFn = function (name: any) {
         return `Hello, ${name}!`;
       };
 
@@ -533,16 +503,15 @@ describe("HandlebarsEmailRenderer", () => {
     // Test that an error is thrown if the helper name argument is not a string
     it("should throw an error if the helper name argument is not a string", async () => {
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
-      const helperFn = function (name) {
+      const helperFn = function (name: any) {
         return `Hello, ${name}!`;
       };
-      await assert.rejects(
-        async () => mailRenderer.registerHelper(123, helperFn),
-        {
-          name: "Error",
-          message:
-            'The "name" argument must be a string. Received an argument of type "number".',
-        }
+
+      expect(() => {
+        // @ts-ignore
+        mailRenderer.registerHelper(123, helperFn);
+      }).to.throw(
+        'The "name" argument must be a string. Received an argument of type "number".'
       );
     });
 
@@ -551,13 +520,12 @@ describe("HandlebarsEmailRenderer", () => {
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
       const helperName = "greet";
       const invalidHelperFn = "not a function";
-      await assert.rejects(
-        async () => mailRenderer.registerHelper(helperName, invalidHelperFn),
-        {
-          name: "Error",
-          message:
-            'The "fn" argument must be a function. Received an argument of type "string".',
-        }
+
+      expect(() => {
+        // @ts-ignore
+        mailRenderer.registerHelper(helperName, invalidHelperFn);
+      }).to.throw(
+        'The "fn" argument must be a function. Received an argument of type "string".'
       );
     });
   });
@@ -626,13 +594,11 @@ describe("HandlebarsEmailRenderer", () => {
     it("should throw an error if helpers is not an object", async () => {
       const mailRenderer = new HandlebarsEmailRenderer(viewsPath);
 
-      await assert.rejects(
-        async () => mailRenderer.registerHelpers("not an object"),
-        {
-          name: "Error",
-          message:
-            'The "helpers" argument must be an object. Received an argument of type "string".',
-        }
+      expect(() => {
+        // @ts-ignore
+        mailRenderer.registerHelpers("not an object");
+      }).to.throw(
+        'The "helpers" argument must be an object. Received an argument of type "string".'
       );
     });
   });
