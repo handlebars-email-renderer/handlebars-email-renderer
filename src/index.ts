@@ -24,7 +24,7 @@ interface HandlebarsEmailRendererOptions {
  * @class
  */
 export class HandlebarsEmailRenderer {
-  private isBuilt: boolean = false;
+  private isBuilt = false;
   private buildPromiseResolve!: () => void;
   private buildPromise: Promise<void>;
   viewsPath: string;
@@ -230,7 +230,9 @@ export class HandlebarsEmailRenderer {
     while (!this.isBuilt) {
       // FIXME: prevent FATAL ERROR: JavaScript heap out of memory
       runLoopOnce();
-      setTimeout(() => {}, 50); // This line is just to prevent the loop from freezing
+      setTimeout(() => {
+        // This line is just to prevent the loop from freezing
+      }, 50);
     }
   }
 
@@ -246,48 +248,41 @@ export class HandlebarsEmailRenderer {
     view: string,
     options: Record<string, unknown> = {}
   ): Promise<string> {
-    try {
-      // Check if viewsPath exist (if no exist: infinity build)
-      await fsPromises.stat(path.resolve(this.viewsPath!));
+    // Check if viewsPath exist (if no exist: infinity build)
+    await fsPromises.stat(path.resolve(this.viewsPath!));
 
-      // Wait for the renderer to be built before rendering the email
-      await this.waitBuilt();
+    // Wait for the renderer to be built before rendering the email
+    await this.waitBuilt();
 
-      // Set the default layout if none is provided
-      options.layout = options.layout ?? "main";
+    // Set the default layout if none is provided
+    options.layout = options.layout ?? "main";
 
-      // Validate the view argument
-      if (typeof view !== "string") {
-        throw new Error(
-          `The "view" argument must be a string. Received an argument of type "${typeof view}".`
-        );
-      }
-
-      // Read the layout and template files
-      const layoutContent = await fsPromises.readFile(
-        path.join(
-          path.resolve(this.viewsPath!),
-          `layouts/${options.layout}.hbs`
-        ),
-        "utf-8"
+    // Validate the view argument
+    if (typeof view !== "string") {
+      throw new Error(
+        `The "view" argument must be a string. Received an argument of type "${typeof view}".`
       );
-      const templateContent = await fsPromises.readFile(
-        path.join(path.resolve(this.viewsPath!), `${view}.hbs`),
-        "utf-8"
-      );
-      // Compile the layout and template
-      const layout = Handlebars.compile(layoutContent);
-      const template = Handlebars.compile(templateContent);
-
-      // Render the template and layout
-      const body = template(options);
-      return layout({
-        ...options,
-        body,
-      });
-    } catch (error) {
-      throw error;
     }
+
+    // Read the layout and template files
+    const layoutContent = await fsPromises.readFile(
+      path.join(path.resolve(this.viewsPath!), `layouts/${options.layout}.hbs`),
+      "utf-8"
+    );
+    const templateContent = await fsPromises.readFile(
+      path.join(path.resolve(this.viewsPath!), `${view}.hbs`),
+      "utf-8"
+    );
+    // Compile the layout and template
+    const layout = Handlebars.compile(layoutContent);
+    const template = Handlebars.compile(templateContent);
+
+    // Render the template and layout
+    const body = template(options);
+    return layout({
+      ...options,
+      body,
+    });
   }
 
   /**
@@ -299,49 +294,42 @@ export class HandlebarsEmailRenderer {
    * @returns {string} - The rendered email.
    */
   renderSync(view: string, options: Record<string, unknown> = {}): string {
-    try {
-      // Check if viewsPath exist (if no exist: infinity build)
-      if (!fs.existsSync(path.resolve(this.viewsPath!))) {
-        throw new Error(`The viewsPath "${this.viewsPath}" does not exist.`);
-      }
-
-      // Wait for the renderer to be built before rendering the email
-      this.waitBuiltSync();
-
-      // Set the default layout if none is provided
-      options.layout = options.layout ?? "main";
-
-      // Validate the view argument
-      if (typeof view !== "string") {
-        throw new Error(
-          `The "view" argument must be a string. Received an argument of type "${typeof view}".`
-        );
-      }
-
-      // Read the layout and template files
-      const layoutContent = fs.readFileSync(
-        path.join(
-          path.resolve(this.viewsPath!),
-          `layouts/${options.layout}.hbs`
-        ),
-        "utf-8"
-      );
-      const templateContent = fs.readFileSync(
-        path.join(path.resolve(this.viewsPath!), `${view}.hbs`),
-        "utf-8"
-      );
-      // Compile the layout and template
-      const layout = Handlebars.compile(layoutContent);
-      const template = Handlebars.compile(templateContent);
-
-      // Render the template and layout
-      const body = template(options);
-      return layout({
-        ...options,
-        body: body,
-      });
-    } catch (error) {
-      throw error;
+    // Check if viewsPath exist (if no exist: infinity build)
+    if (!fs.existsSync(path.resolve(this.viewsPath!))) {
+      throw new Error(`The viewsPath "${this.viewsPath}" does not exist.`);
     }
+
+    // Wait for the renderer to be built before rendering the email
+    this.waitBuiltSync();
+
+    // Set the default layout if none is provided
+    options.layout = options.layout ?? "main";
+
+    // Validate the view argument
+    if (typeof view !== "string") {
+      throw new Error(
+        `The "view" argument must be a string. Received an argument of type "${typeof view}".`
+      );
+    }
+
+    // Read the layout and template files
+    const layoutContent = fs.readFileSync(
+      path.join(path.resolve(this.viewsPath!), `layouts/${options.layout}.hbs`),
+      "utf-8"
+    );
+    const templateContent = fs.readFileSync(
+      path.join(path.resolve(this.viewsPath!), `${view}.hbs`),
+      "utf-8"
+    );
+    // Compile the layout and template
+    const layout = Handlebars.compile(layoutContent);
+    const template = Handlebars.compile(templateContent);
+
+    // Render the template and layout
+    const body = template(options);
+    return layout({
+      ...options,
+      body: body,
+    });
   }
 }

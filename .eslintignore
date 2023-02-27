@@ -1,0 +1,5 @@
+/lib
+/exemples
+/test/fixtures
+/node_modules
+.eslintrc.js

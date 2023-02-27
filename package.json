@@ -1,6 +1,6 @@
 {
   "name": "handlebars-email-renderer",
-  "version": "1.0.1",
+  "version": "2.0.1",
   "description": "Allows you to create components that render to email HTML using Handlebars.js.",
   "private": false,
   "exports": {
@@ -21,12 +21,14 @@
     "lib/**/*"
   ],
   "scripts": {
+    "lint": "eslint --ext .ts ./",
+    "format": "prettier --write \"**/*.{js,mjs,ts,md,json,yml}\" --ignore-path .gitignore",
     "clean": "rm -rf ./lib",
     "reinstall": "rm -r node_modules && yarn install",
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc -p ./configs/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
     "build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
-    "test": "mocha ./test/*.spec.mjs",
+    "test": "mocha ./test/index.spec.mjs",
     "semantic-release": "semantic-release",
     "prepack": "npm run build"
   },
@@ -50,7 +52,7 @@
     "npm",
     "nodejs"
   ],
-  "author": "Xavier Loué",
+  "author": "Xavier Loué <xavierloue@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/handlebars-email-renderer/handlebars-email-renderer/issues"
@@ -66,11 +68,32 @@
     "@types/jest": "^29.4.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.14.1",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
     "chai": "^4.3.7",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.6.0",
     "jest": "^29.4.3",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.20",
+    "prettier": "^2.8.4",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
+  },
+  "engines": {
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier"
+    ]
   }
 }
