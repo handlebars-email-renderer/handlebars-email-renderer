@@ -106,7 +106,7 @@ export class HandlebarsEmailRenderer {
    */
   private async registerPartials(): Promise<void> {
     // Get the path to the partials folder
-    const partialsPath = path.join(path.resolve(this.viewsPath!), "partials");
+    const partialsPath = path.join(path.resolve(this.viewsPath), "partials");
     // Recursively register all partials in the partials folder
     await this.registerPartialsRecursive(partialsPath, partialsPath);
   }
@@ -249,7 +249,7 @@ export class HandlebarsEmailRenderer {
     options: Record<string, unknown> = {}
   ): Promise<string> {
     // Check if viewsPath exist (if no exist: infinity build)
-    await fsPromises.stat(path.resolve(this.viewsPath!));
+    await fsPromises.stat(path.resolve(this.viewsPath));
 
     // Wait for the renderer to be built before rendering the email
     await this.waitBuilt();
@@ -266,11 +266,11 @@ export class HandlebarsEmailRenderer {
 
     // Read the layout and template files
     const layoutContent = await fsPromises.readFile(
-      path.join(path.resolve(this.viewsPath!), `layouts/${options.layout}.hbs`),
+      path.join(path.resolve(this.viewsPath), `layouts/${options.layout}.hbs`),
       "utf-8"
     );
     const templateContent = await fsPromises.readFile(
-      path.join(path.resolve(this.viewsPath!), `${view}.hbs`),
+      path.join(path.resolve(this.viewsPath), `${view}.hbs`),
       "utf-8"
     );
     // Compile the layout and template
@@ -295,7 +295,7 @@ export class HandlebarsEmailRenderer {
    */
   renderSync(view: string, options: Record<string, unknown> = {}): string {
     // Check if viewsPath exist (if no exist: infinity build)
-    if (!fs.existsSync(path.resolve(this.viewsPath!))) {
+    if (!fs.existsSync(path.resolve(this.viewsPath))) {
       throw new Error(`The viewsPath "${this.viewsPath}" does not exist.`);
     }
 
@@ -314,11 +314,11 @@ export class HandlebarsEmailRenderer {
 
     // Read the layout and template files
     const layoutContent = fs.readFileSync(
-      path.join(path.resolve(this.viewsPath!), `layouts/${options.layout}.hbs`),
+      path.join(path.resolve(this.viewsPath), `layouts/${options.layout}.hbs`),
       "utf-8"
     );
     const templateContent = fs.readFileSync(
-      path.join(path.resolve(this.viewsPath!), `${view}.hbs`),
+      path.join(path.resolve(this.viewsPath), `${view}.hbs`),
       "utf-8"
     );
     // Compile the layout and template
