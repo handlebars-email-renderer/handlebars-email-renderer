@@ -10,6 +10,8 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/handlebars-email-renderer/handlebars-email-renderer)](https://github.com/handlebars-email-renderer/handlebars-email-renderer/pulls)
 [![GitHub last commit](https://img.shields.io/github/last-commit/handlebars-email-renderer/handlebars-email-renderer)](https://github.com/handlebars-email-renderer/handlebars-email-renderer/commits)
 
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
 <div style="text-align:center"><img src="https://i.imgur.com/RV9wRd4.png" alt="Illustration de l'extrait de code"></div>
 
 <!--
